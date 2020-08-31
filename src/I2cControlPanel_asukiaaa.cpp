@@ -2,6 +2,21 @@
 #include "utils_asukiaaa.h"
 #include "utils_asukiaaa/wire.h"
 
+I2cControlPanel_asukiaaa_info::I2cControlPanel_asukiaaa_info() {
+  for (int i = 0; i < 16; ++i) {
+    lcdChars[i] = ' ';
+  }
+}
+
+void I2cControlPanel_asukiaaa_info::putStringToLcdChars(String str, int from) {
+  int strLen = str.length();
+  for (int i = 0; i < strLen; ++i) {
+    int charIndex = from + i;
+    if (charIndex >= 16) break;
+    lcdChars[charIndex] = str[i];
+  }
+}
+
 I2cControlPanel_asukiaaa::I2cControlPanel_asukiaaa(uint8_t address) {
   wire = NULL;
   this->address = address;
@@ -79,6 +94,6 @@ int I2cControlPanel_asukiaaa::writeLeds(I2cControlPanel_asukiaaa_info info) {
 int I2cControlPanel_asukiaaa::writeLcdChars(I2cControlPanel_asukiaaa_info info) {
   wire->beginTransmission(address);
   wire->write(I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS);
-  wire->write(info.lcdChars, 16);
+  wire->write((const uint8_t*) info.lcdChars, 16);
   return wire->endTransmission();
 }

@@ -12,7 +12,9 @@
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS 0x06
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS 0x08
 
-typedef struct {
+class I2cControlPanel_asukiaaa_info {
+ public:
+  I2cControlPanel_asukiaaa_info();
   bool buttonJoyLeft;
   bool buttonJoyRight;
   bool buttonsLeft[2];
@@ -25,7 +27,8 @@ typedef struct {
   char lcdChars[16];
   bool leds[4];
   bool toggleSwitches[2];
-} I2cControlPanel_asukiaaa_info;
+  void putStringToLcdChars(String str, int from);
+};
 
 class I2cControlPanel_asukiaaa {
  public:

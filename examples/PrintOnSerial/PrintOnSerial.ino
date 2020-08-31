@@ -1,4 +1,6 @@
 #include <I2cControlPanel_asukiaaa.h>
+#include <utils_asukiaaa.h>
+#include <utils_asukiaaa/string.h>
 
 I2cControlPanel_asukiaaa controlPanel;
 
@@ -7,29 +9,66 @@ void setup() {
   controlPanel.begin();
 }
 
+int count = 0;
+
 void loop() {
   I2cControlPanel_asukiaaa_info info;
-  controlPanel.readButtonsAndSwitches(&info);
+  int resultCode;
+  resultCode = controlPanel.readButtonsAndSwitches(&info);
+  if (resultCode == 0) {
+    Serial.println("Buttons");
+    Serial.println(String(info.buttonsLeft[0]) + " " +
+                  String(info.buttonsLeft[1]) + " " +
+                  String(info.buttonsRight[0]) + " " +
+                  String(info.buttonsRight[1]) + " " +
+                  String(info.buttonJoyLeft) + " " +
+                  String(info.buttonJoyRight) + " " +
+                  String(info.toggleSwitches[0]) + " " +
+                  String(info.toggleSwitches[1]));
+  } else {
+    Serial.println("Cannot read buttons info");
+  }
 
-  Serial.println("Buttons");
-  Serial.println(String(info.buttonsLeft[0]) + " " +
-                 String(info.buttonsLeft[1]) + " " +
-                 String(info.buttonsRight[0]) + " " +
-                 String(info.buttonsRight[1]) + " " +
-                 String(info.buttonJoyLeft) + " " +
-                 String(info.buttonJoyLeft));
+  resultCode = controlPanel.readEncoders(&info);
+  if (resultCode) {
+    Serial.println("Encoders");
+    Serial.println(String(info.encoders[0]) + " " +
+                    String(info.encoders[1]));
+  } else {
+    Serial.println("Cannot read encoders info");
+  }
 
-  controlPanel.readEncoders(&info);
-  Serial.println("Encoders");
-  Serial.println(String(info.encoders[0]) + " " +
-                 String(info.encoders[1]));
+  resultCode = controlPanel.readJoysticksHoriAndVert(&info);
+  if (resultCode == 0) {
+    Serial.println("Joy hori and vert");
+    Serial.println(utils_asukiaaa::string::padNumStart(info.joyLeftHori, 4, ' ') +
+                  utils_asukiaaa::string::padNumStart(info.joyLeftVert, 4, ' '));
+    Serial.println(utils_asukiaaa::string::padNumStart(info.joyRightHori, 4, ' ') +
+                  utils_asukiaaa::string::padNumStart(info.joyRightVert, 4, ' '));
+  } else {
+    Serial.println("Cannot read joy hori vert info");
+  }
 
-  controlPanel.readJoysticksHoriAndVert(&info);
-  Serial.println("Joy hori and vert");
-  Serial.println(info.joyLeftHori);
-  Serial.println(info.joyLeftVert);
-  Serial.println(info.joyRightHori);
-  Serial.println(info.joyRightVert);
+  int ledToBright = count % 5;
+  for (int i = 0; i < 4; ++i) {
+    info.leds[i] = i == ledToBright;
+  }
+  resultCode = controlPanel.writeLeds(info);
+  if (resultCode == 0) {
+    Serial.println("Wrote led signal");
+  } else {
+    Serial.println("Cannot write led signal");
+  }
 
-  delay(200);
+  String strToShow = String(count);
+  info.putStringToLcdChars(strToShow, 8 - strToShow.length());
+  resultCode = controlPanel.writeLcdChars(info);
+  if (resultCode == 0) {
+    Serial.println("Update lcd");
+  } else {
+    Serial.println("Cannot update lcd");
+  }
+
+  ++count;
+  delay(1000);
 }
