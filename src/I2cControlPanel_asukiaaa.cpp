@@ -44,8 +44,8 @@ int I2cControlPanel_asukiaaa::readButtonsAndSwitches(I2cControlPanel_asukiaaa_in
   info->buttonsRight[1] = (buff & 0b00001000) != 0;
   info->buttonJoyLeft = (buff & 0b00010000) != 0;
   info->buttonJoyRight = (buff & 0b00100000) != 0;
-  info->toggleSwitches[0] = (buff & 0b01000000) != 0;
-  info->toggleSwitches[1] = (buff & 0b10000000) != 0;
+  info->slideSwitches[0] = (buff & 0b01000000) != 0;
+  info->slideSwitches[1] = (buff & 0b10000000) != 0;
   return 0;
 }
 

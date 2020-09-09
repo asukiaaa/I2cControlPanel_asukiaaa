@@ -26,7 +26,7 @@ class I2cControlPanel_asukiaaa_info {
   uint8_t joyRightVert;
   char lcdChars[16];
   bool leds[4];
-  bool toggleSwitches[2];
+  bool slideSwitches[2];
   void putStringToLcdChars(String str, int from);
 };
 
