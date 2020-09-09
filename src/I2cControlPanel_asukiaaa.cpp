@@ -6,6 +6,7 @@ I2cControlPanel_asukiaaa_info::I2cControlPanel_asukiaaa_info() {
   for (int i = 0; i < 16; ++i) {
     lcdChars[i] = ' ';
   }
+  joyLeftHori = joyLeftVert = joyRightHori = joyRightVert = 0xff / 2;
 }
 
 void I2cControlPanel_asukiaaa_info::putStringToLcdChars(String str, int from) {
