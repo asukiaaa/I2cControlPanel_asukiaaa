@@ -18,13 +18,13 @@ void loop() {
   if (resultCode == 0) {
     Serial.println("Buttons");
     Serial.println(String(info.buttonsLeft[0]) + " " +
-                  String(info.buttonsLeft[1]) + " " +
-                  String(info.buttonsRight[0]) + " " +
-                  String(info.buttonsRight[1]) + " " +
-                  String(info.buttonJoyLeft) + " " +
-                  String(info.buttonJoyRight) + " " +
-                  String(info.slideSwitches[0]) + " " +
-                  String(info.slideSwitches[1]));
+                   String(info.buttonsLeft[1]) + " " +
+                   String(info.buttonsRight[0]) + " " +
+                   String(info.buttonsRight[1]) + " " +
+                   String(info.buttonJoyLeft) + " " +
+                   String(info.buttonJoyRight) + " " +
+                   String(info.slideSwitches[0]) + " " +
+                   String(info.slideSwitches[1]));
   } else {
     Serial.println("Cannot read buttons info");
   }
@@ -33,7 +33,7 @@ void loop() {
   if (resultCode == 0) {
     Serial.println("Encoders");
     Serial.println(String(info.encoders[0]) + " " +
-                    String(info.encoders[1]));
+                   String(info.encoders[1]));
   } else {
     Serial.println("Cannot read encoders info");
   }
@@ -42,9 +42,9 @@ void loop() {
   if (resultCode == 0) {
     Serial.println("Joy hori and vert");
     Serial.println(utils_asukiaaa::string::padNumStart(info.joyLeftHori, 4, ' ') +
-                  utils_asukiaaa::string::padNumStart(info.joyLeftVert, 4, ' '));
+                   utils_asukiaaa::string::padNumStart(info.joyLeftVert, 4, ' '));
     Serial.println(utils_asukiaaa::string::padNumStart(info.joyRightHori, 4, ' ') +
-                  utils_asukiaaa::string::padNumStart(info.joyRightVert, 4, ' '));
+                   utils_asukiaaa::string::padNumStart(info.joyRightVert, 4, ' '));
   } else {
     Serial.println("Cannot read joy hori vert info");
   }
