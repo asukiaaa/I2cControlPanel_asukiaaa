@@ -76,7 +76,7 @@ int I2cControlPanel_asukiaaa::readEncoders(I2cControlPanel_asukiaaa_info* info) 
 }
 
 int I2cControlPanel_asukiaaa::readLcdChars(I2cControlPanel_asukiaaa_info* info) {
-  return utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS, info->encoders, 16);
+  return utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS, (uint8_t*) info->lcdChars, 16);
 }
 
 int I2cControlPanel_asukiaaa::writeLeds(I2cControlPanel_asukiaaa_info info) {
