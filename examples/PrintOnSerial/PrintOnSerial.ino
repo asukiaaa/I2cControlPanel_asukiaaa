@@ -23,8 +23,8 @@ void loop() {
                   String(info.buttonsRight[1]) + " " +
                   String(info.buttonJoyLeft) + " " +
                   String(info.buttonJoyRight) + " " +
-                  String(info.toggleSwitches[0]) + " " +
-                  String(info.toggleSwitches[1]));
+                  String(info.slideSwitches[0]) + " " +
+                  String(info.slideSwitches[1]));
   } else {
     Serial.println("Cannot read buttons info");
   }
