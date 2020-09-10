@@ -30,7 +30,7 @@ void loop() {
   }
 
   resultCode = controlPanel.readEncoders(&info);
-  if (resultCode) {
+  if (resultCode == 0) {
     Serial.println("Encoders");
     Serial.println(String(info.encoders[0]) + " " +
                     String(info.encoders[1]));
