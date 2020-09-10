@@ -55,9 +55,9 @@ void loop() {
   }
   resultCode = controlPanel.writeLeds(info);
   if (resultCode == 0) {
-    Serial.println("Wrote led signal");
+    Serial.println("Update leds");
   } else {
-    Serial.println("Cannot write led signal");
+    Serial.println("Cannot update leds");
   }
 
   String strToShow = String(count);
