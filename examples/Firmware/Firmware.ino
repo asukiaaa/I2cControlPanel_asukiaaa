@@ -36,8 +36,6 @@ int registerIndex = 0;
 // 2-7 byte: analog * 6
 // 8-23 byte: char * 16
 const int registerLen = 24;
-const int analogStartIndex = 2;
-const int charStartIndex = 9;
 uint8_t registers[registerLen];
 
 ST7032_asukiaaa lcd;
@@ -229,11 +227,9 @@ void updateLcdIfNeeded() {
   static const int charsLen = 16;
   static String line0 = "";
   static String line1 = "";
-  if (line0.length() < charsLen) {
-    while (line0.length() < charsLen) {
-      line0 += " ";
-      line1 += " ";
-    }
+  while (line0.length() < charsLen) {
+    line0 += " ";
+    line1 += " ";
   }
   bool neededToUpdateLine0 = false;
   bool neededToUpdateLine1 = false;
@@ -255,7 +251,6 @@ void updateLcdIfNeeded() {
   if (neededToUpdateLine0) {
     lcd.setCursor(0, 0);
     lcd.print(line0);
-    delay(1);
   }
   if (neededToUpdateLine1) {
     lcd.setCursor(0, 1);
