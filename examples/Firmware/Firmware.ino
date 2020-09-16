@@ -245,8 +245,9 @@ void updateLcdIfNeeded() {
         neededToUpdateLine0 = true;
       }
     } else {
-      if (line1[i] != targetChar) {
-        line1[i - charsLen / 2] = targetChar;
+      int line1Index = i - charsLen / 2;
+      if (line1[line1Index] != targetChar) {
+        line1[line1Index] = targetChar;
         neededToUpdateLine1 = true;
       }
     }
