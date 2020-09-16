@@ -11,6 +11,7 @@
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS 0x05
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS 0x07
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS 0x08
+#define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH 24
 
 class I2cControlPanel_asukiaaa_info {
  public:
@@ -36,17 +37,24 @@ class I2cControlPanel_asukiaaa {
   void setWire(TwoWire* wire);
   void begin();
 
+  int read(I2cControlPanel_asukiaaa_info* info, bool withWriteArea = true);
   int readButtonsAndSwitches(I2cControlPanel_asukiaaa_info* info);
   int readEncoders(I2cControlPanel_asukiaaa_info* info);
+  int readJoysticksHoriAndVert(I2cControlPanel_asukiaaa_info* info);
   int readLcdChars(I2cControlPanel_asukiaaa_info* info);
   int readLeds(I2cControlPanel_asukiaaa_info* info);
-  int readJoysticksHoriAndVert(I2cControlPanel_asukiaaa_info* info);
-  int writeLeds(I2cControlPanel_asukiaaa_info info);
   int writeLcdChars(I2cControlPanel_asukiaaa_info info);
+  int writeLeds(I2cControlPanel_asukiaaa_info info);
 
  private:
+  uint8_t buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
   TwoWire* wire;
   uint8_t address;
+  static void parseButtonsAndSwitches(I2cControlPanel_asukiaaa_info* info, uint8_t buff);
+  static void parseEncoders(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs);
+  static void parseJoystickHoriAndVert(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs);
+  static void parseLcdChars(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs);
+  static void parseLeds(I2cControlPanel_asukiaaa_info* info, uint8_t buff);
 };
 
 #endif
