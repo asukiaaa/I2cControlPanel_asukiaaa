@@ -16,6 +16,7 @@
 class I2cControlPanel_asukiaaa_info {
  public:
   I2cControlPanel_asukiaaa_info();
+  int stateRead;
   bool buttonJoyLeft;
   bool buttonJoyRight;
   bool buttonsLeft[2];
@@ -55,6 +56,7 @@ class I2cControlPanel_asukiaaa {
   static void parseJoystickHoriAndVert(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs);
   static void parseLcdChars(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs);
   static void parseLeds(I2cControlPanel_asukiaaa_info* info, uint8_t buff);
+  static int setStateRead(I2cControlPanel_asukiaaa_info* info, int result);
 };
 
 #endif

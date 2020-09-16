@@ -7,6 +7,7 @@ I2cControlPanel_asukiaaa_info::I2cControlPanel_asukiaaa_info() {
     lcdChars[i] = ' ';
   }
   joyLeftHori = joyLeftVert = joyRightHori = joyRightVert = 0xff / 2;
+  stateRead = -1;
 }
 
 void I2cControlPanel_asukiaaa_info::putStringToLcdChars(String str, int from) {
@@ -36,44 +37,48 @@ void I2cControlPanel_asukiaaa::begin() {
 
 int I2cControlPanel_asukiaaa::read(I2cControlPanel_asukiaaa_info* info, bool withWriteArea) {
   int result = utils_asukiaaa::wire::readBytes(wire, address, 0, buffers, withWriteArea ? I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH : I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS);
-  if (result != 0) return result;
+  if (result != 0) return setStateRead(info, result);
   parseButtonsAndSwitches(info, buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_BUTTONS_AND_SWITCHES]);
   parseEncoders(info, &buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS]);
   parseJoystickHoriAndVert(info, &buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT]);
-  parseLcdChars(info, &buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS]);
-  parseLeds(info, buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS]);
-  return 0;
+  if (withWriteArea) {
+    parseLcdChars(info, &buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS]);
+    parseLeds(info, buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS]);
+  }
+  return setStateRead(info, result);
 }
 
 int I2cControlPanel_asukiaaa::readButtonsAndSwitches(I2cControlPanel_asukiaaa_info* info) {
   uint8_t buff;
   int result = utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_BUTTONS_AND_SWITCHES, &buff, 1);
-  if (result != 0) return result;
+  if (result != 0) return setStateRead(info, result);
   parseButtonsAndSwitches(info, buff);
-  return 0;
+  return setStateRead(info, result);
 }
 
 int I2cControlPanel_asukiaaa::readLeds(I2cControlPanel_asukiaaa_info* info) {
   uint8_t buff;
   int result = utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS, &buff, 1);
-  if (result != 0) return result;
+  if (result != 0) return setStateRead(info, result);
   parseLeds(info, buff);
-  return 0;
+  return setStateRead(info, result);
 }
 
 int I2cControlPanel_asukiaaa::readJoysticksHoriAndVert(I2cControlPanel_asukiaaa_info* info) {
   int result = utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT, (uint8_t *) buffers, 4);
-  if (result != 0) return result;
+  if (result != 0) return setStateRead(info, result);
   parseJoystickHoriAndVert(info, buffers);
-  return 0;
+  return setStateRead(info, result);
 }
 
 int I2cControlPanel_asukiaaa::readEncoders(I2cControlPanel_asukiaaa_info* info) {
-  return utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS, info->encoders, 2);
+  int state = utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS, info->encoders, 2);
+  return setStateRead(info, state);
 }
 
 int I2cControlPanel_asukiaaa::readLcdChars(I2cControlPanel_asukiaaa_info* info) {
-  return utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS, (uint8_t*) info->lcdChars, 16);
+  int state = utils_asukiaaa::wire::readBytes(wire, address, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS, (uint8_t*) info->lcdChars, 16);
+  return setStateRead(info, state);
 }
 
 int I2cControlPanel_asukiaaa::writeLeds(I2cControlPanel_asukiaaa_info info) {
@@ -108,8 +113,7 @@ void I2cControlPanel_asukiaaa::parseButtonsAndSwitches(I2cControlPanel_asukiaaa_
 }
 
 void I2cControlPanel_asukiaaa::parseEncoders(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs) {
-  info->encoders[0] = buffs[0];
-  info->encoders[1] = buffs[1];
+  memcpy(info->encoders, buffs, 2);
 }
 
 void I2cControlPanel_asukiaaa::parseJoystickHoriAndVert(I2cControlPanel_asukiaaa_info* info, uint8_t* buffs) {
@@ -128,4 +132,8 @@ void I2cControlPanel_asukiaaa::parseLeds(I2cControlPanel_asukiaaa_info* info, ui
   info->leds[1] = (buff & 0b0010) != 0;
   info->leds[2] = (buff & 0b0100) != 0;
   info->leds[3] = (buff & 0b1000) != 0;
+}
+
+int I2cControlPanel_asukiaaa::setStateRead(I2cControlPanel_asukiaaa_info* info, int state) {
+  return info->stateRead = state;
 }
