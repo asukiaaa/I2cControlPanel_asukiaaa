@@ -1,6 +1,6 @@
 #include "I2cControlPanel_asukiaaa.h"
-#include "utils_asukiaaa.h"
-#include "utils_asukiaaa/wire.h"
+#include <utils_asukiaaa.h>
+#include <utils_asukiaaa/wire.h>
 
 I2cControlPanel_asukiaaa_info::I2cControlPanel_asukiaaa_info() {
   for (int i = 0; i < 16; ++i) {
