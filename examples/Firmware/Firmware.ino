@@ -5,8 +5,8 @@
 #include <Wire1.h>
 #include <ST7032_asukiaaa.h>
 #include <I2cControlPanel_asukiaaa.h>
-#include <utils_asukiaaa.h>
-#include <utils_asukiaaa/string.h>
+#include <string_asukiaaa.h>
+#include <wire_asukiaaa.h>
 
 #define LED_0 0
 #define LED_1 1
@@ -128,7 +128,7 @@ void setup() {
   lcd.begin(2, 8);
   lcd.setContrast(30);
   uint8_t address = readAddress();
-  String initialStr = "hi  0x" + utils_asukiaaa::string::padStart(String(address, HEX), 2, '0');
+  String initialStr = "hi  0x" + string_asukiaaa::padStart(String(address, HEX), 2, '0');
   for (int i = 0; i < initialStr.length(); ++i) {
     registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i] = initialStr[i];
   }

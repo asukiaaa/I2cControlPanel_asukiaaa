@@ -1,6 +1,5 @@
 #include <I2cControlPanel_asukiaaa.h>
-#include <utils_asukiaaa.h>
-#include <utils_asukiaaa/string.h>
+#include <string_asukiaaa.h>
 
 I2cControlPanel_asukiaaa::Driver controlPanel;
 
@@ -24,13 +23,13 @@ void printInfo(I2cControlPanel_asukiaaa::Info info) {
                  String(info.encoders[1]));
   Serial.println("Joy: hori, vert");
   Serial.println("L  : " +
-                 utils_asukiaaa::string::padNumStart(info.joyLeftHori, 4, ' ') +
+                 string_asukiaaa::padNumStart(info.joyLeftHori, 4, ' ') +
                  "," +
-                 utils_asukiaaa::string::padNumStart(info.joyLeftVert, 4, ' '));
+                 string_asukiaaa::padNumStart(info.joyLeftVert, 4, ' '));
   Serial.println("R  : " +
-                 utils_asukiaaa::string::padNumStart(info.joyRightHori, 4, ' ') +
+                 string_asukiaaa::padNumStart(info.joyRightHori, 4, ' ') +
                  "," +
-                 utils_asukiaaa::string::padNumStart(info.joyRightVert, 4, ' '));
+                 string_asukiaaa::padNumStart(info.joyRightVert, 4, ' '));
   Serial.print("LEDs:");
   for (int i = 0; i < 4; ++i) {
     Serial.print(" ");
@@ -68,7 +67,7 @@ void loop() {
     Serial.println("Cannot update leds. Error: " + String(i2cState));
   }
 
-  String strToShow = utils_asukiaaa::string::padNumStart(count, 4, ' ');
+  String strToShow = string_asukiaaa::padNumStart(count, 4, ' ');
   info.putStringToLcdChars(strToShow, 16 - strToShow.length());
   i2cState = controlPanel.writeLcdChars(info);
   if (i2cState == 0) {
