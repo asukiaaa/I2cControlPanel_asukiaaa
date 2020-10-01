@@ -27,8 +27,8 @@
 #define ANALOG_JOY_R_VERT 2
 #define ANALOG_ENCODE_L 6
 #define ANALOG_ENCODE_R 7
-#define TOGGLE_T 21
-#define TOGGLE_B 20
+#define SLIDE_0 20
+#define SLIDE_1 21
 
 int registerIndex = 0;
 // 0 byte: button * 4, joy button * 2, toggle * 2]
@@ -120,8 +120,8 @@ void setup() {
   pinMode(BTN_3, INPUT_PULLUP);
   pinMode(BTN_JOY_L, INPUT_PULLUP);
   pinMode(BTN_JOY_R, INPUT_PULLUP);
-  pinMode(TOGGLE_T, INPUT_PULLUP);
-  pinMode(TOGGLE_B, INPUT_PULLUP);
+  pinMode(SLIDE_0, INPUT_PULLUP);
+  pinMode(SLIDE_1, INPUT_PULLUP);
 
   pinMode(BTN_3, INPUT_PULLUP);
 
@@ -208,8 +208,8 @@ uint8_t readButtonsAndSwitches() {
   if (b3) buttons |= 0b1000;
   if (digitalRead(BTN_JOY_L) == LOW) buttons |= 0b00010000;
   if (digitalRead(BTN_JOY_R) == LOW) buttons |= 0b00100000;
-  if (digitalRead(TOGGLE_T) == HIGH) buttons |= 0b01000000;
-  if (digitalRead(TOGGLE_B) == HIGH) buttons |= 0b10000000;
+  if (digitalRead(SLIDE_0) == LOW) buttons |= 0b01000000;
+  if (digitalRead(SLIDE_1) == LOW) buttons |= 0b10000000;
   return buttons;
 }
 
