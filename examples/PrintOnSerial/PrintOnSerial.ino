@@ -2,14 +2,14 @@
 #include <utils_asukiaaa.h>
 #include <utils_asukiaaa/string.h>
 
-I2cControlPanel_asukiaaa controlPanel;
+I2cControlPanel_asukiaaa::Driver controlPanel;
 
 void setup() {
   Serial.begin(9600);
   controlPanel.begin();
 }
 
-void printInfo(I2cControlPanel_asukiaaa_info info) {
+void printInfo(I2cControlPanel_asukiaaa::Info info) {
   Serial.println("Buttons: " +
                  String(info.buttonsLeft[0]) + " " +
                  String(info.buttonsLeft[1]) + " " +
@@ -48,7 +48,7 @@ void printInfo(I2cControlPanel_asukiaaa_info info) {
 int count = 0;
 
 void loop() {
-  I2cControlPanel_asukiaaa_info info;
+  I2cControlPanel_asukiaaa::Info info;
   controlPanel.read(&info);
   if (info.stateRead == 0) {
     printInfo(info);
