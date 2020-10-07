@@ -267,6 +267,15 @@ void updateAll() {
   updateLcdIfNeeded();
 }
 
+void countupLed() {
+  static int count = 0;
+  digitalWrite(LED_3, count % 4 / 2 == 1);
+  digitalWrite(LED_2, count % 8 / 4 == 1);
+  digitalWrite(LED_1, count % 16 / 8 == 1);
+  digitalWrite(LED_0, count % 32 / 16 == 1);
+  count ++;
+}
+
 void loop() {
   // testLeds();
   // testButtons();
@@ -274,5 +283,6 @@ void loop() {
   // delay(1000);
   readAll();
   updateAll();
+  // countupLed();
   delay(1);
 }
