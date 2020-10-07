@@ -1,6 +1,7 @@
 // This firmware depends on ST7032_asukiaaa
 // Please install that before updating firmware
 
+#include <avr/wdt.h>
 #include <Wire.h>
 #include <Wire1.h>
 #include <ST7032_asukiaaa.h>
@@ -41,6 +42,7 @@ uint8_t registers[registerLen];
 ST7032_asukiaaa lcd;
 
 void onReceive(int) {
+  wdt_reset();
   uint8_t receivedLen = 0;
   while (0 < Wire1.available()) {
     uint8_t v = Wire1.read();
@@ -104,6 +106,7 @@ void updateLeds(bool l0, bool l1, bool l2, bool l3) {
 }
 
 void setup() {
+  wdt_enable(WDTO_1S);
 #ifdef DEBUG
   Serial.begin(9600);
 #endif
