@@ -28,7 +28,6 @@ void printInfo(I2cControlPanel_asukiaaa::Info info) {
   Serial.println("Encoders: " +
                  String(info.encoders[0]) + " " +
                  String(info.encoders[1]));
-  Serial.println("Joy: hori, vert");
   Serial.println("joyLeftHori: " + String(info.joyLeftHori));
   Serial.println("joyLeftVert: " + String(info.joyLeftVert));
   Serial.println("joyRightHori: " + String(info.joyRightHori));
