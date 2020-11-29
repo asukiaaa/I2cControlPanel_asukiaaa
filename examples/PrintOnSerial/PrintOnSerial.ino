@@ -59,25 +59,25 @@ void loop() {
     Serial.println("Cannot read info. Error: " + String(info.stateRead));
   }
 
-  int i2cState;
+  int writeState;
   int ledToBright = count % 5;
   for (int i = 0; i < 4; ++i) {
     info.leds[i] = i == ledToBright;
   }
-  i2cState = controlPanel.writeLeds(info);
-  if (i2cState == 0) {
+  writeState = controlPanel.writeLeds(info);
+  if (writeState == 0) {
     Serial.println("Update leds");
   } else {
-    Serial.println("Cannot update leds. Error: " + String(i2cState));
+    Serial.println("Cannot update leds. Error: " + String(writeState));
   }
 
   String strToShow = String(count);
   info.putStringToLcdChars(strToShow, 16 - strToShow.length());
-  i2cState = controlPanel.writeLcdChars(info);
-  if (i2cState == 0) {
+  writeState = controlPanel.writeLcdChars(info);
+  if (writeState == 0) {
     Serial.println("Update lcd chars");
   } else {
-    Serial.println("Cannot update lcd. Error: " + String(i2cState));
+    Serial.println("Cannot update lcd. Error: " + String(writeState));
   }
   Serial.println("");
 
