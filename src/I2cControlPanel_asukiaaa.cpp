@@ -116,20 +116,24 @@ namespace I2cControlPanel_asukiaaa {
     return setStateRead(info, state);
   }
 
-  int Driver::writeLeds(Info info) {
-    uint8_t ledState = 0;
-    if (info.leds[0]) ledState |= 0b0001;
-    if (info.leds[1]) ledState |= 0b0010;
-    if (info.leds[2]) ledState |= 0b0100;
-    if (info.leds[3]) ledState |= 0b1000;
+  int Driver::write(const Info& info) {
+    uint8_t ledState = createLedState(info);
+    wire->beginTransmission(address);
+    wire->write(I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS);
+    wire->write(ledState);
+    wire->write((const uint8_t*) info.lcdChars, 16);
+    return wire->endTransmission();
+  }
 
+  int Driver::writeLeds(const Info& info) {
+    uint8_t ledState = createLedState(info);
     wire->beginTransmission(address);
     wire->write(I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS);
     wire->write(ledState);
     return wire->endTransmission();
   }
 
-  int Driver::writeLcdChars(Info info) {
+  int Driver::writeLcdChars(const Info& info) {
     wire->beginTransmission(address);
     wire->write(I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS);
     wire->write((const uint8_t*) info.lcdChars, 16);
@@ -173,4 +177,12 @@ namespace I2cControlPanel_asukiaaa {
     return info->stateRead = state;
   }
 
+  uint8_t Driver::createLedState(const Info& info) {
+     uint8_t ledState = 0;
+    if (info.leds[0]) ledState |= 0b0001;
+    if (info.leds[1]) ledState |= 0b0010;
+    if (info.leds[2]) ledState |= 0b0100;
+    if (info.leds[3]) ledState |= 0b1000;
+    return ledState;
+  }
 }

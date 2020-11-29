@@ -62,25 +62,17 @@ void loop() {
     Serial.println("Cannot read info. Error: " + String(info.stateRead));
   }
 
-  int writeState;
   int ledToBright = count % 5;
   for (int i = 0; i < 4; ++i) {
     info.leds[i] = i == ledToBright;
   }
-  writeState = controlPanel.writeLeds(info);
-  if (writeState == 0) {
-    Serial.println("Update leds");
-  } else {
-    Serial.println("Cannot update leds. Error: " + String(writeState));
-  }
-
   String strToShow = String(count);
   info.putStringToLcdChars(strToShow, 16 - strToShow.length());
-  writeState = controlPanel.writeLcdChars(info);
+  int writeState = controlPanel.write(info);
   if (writeState == 0) {
-    Serial.println("Update lcd chars");
+    Serial.println("Write info about leds and lcdChars");
   } else {
-    Serial.println("Cannot update lcd. Error: " + String(writeState));
+    Serial.println("Cannot write. Error: " + String(writeState));
   }
   Serial.println("");
 

@@ -54,8 +54,9 @@ namespace I2cControlPanel_asukiaaa {
     int readJoysticksHoriAndVert(Info* info);
     int readLcdChars(Info* info);
     int readLeds(Info* info);
-    int writeLcdChars(Info info);
-    int writeLeds(Info info);
+    int write(const Info& info);
+    int writeLcdChars(const Info& info);
+    int writeLeds(const Info& info);
 
   private:
     uint8_t buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
@@ -67,6 +68,7 @@ namespace I2cControlPanel_asukiaaa {
     static void parseLcdChars(Info* info, uint8_t* buffs);
     static void parseLeds(Info* info, uint8_t buff);
     static int setStateRead(Info* info, int result);
+    static uint8_t createLedState(const Info& info);
   };
 
 }
