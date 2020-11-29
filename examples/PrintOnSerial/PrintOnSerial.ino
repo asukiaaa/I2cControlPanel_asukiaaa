@@ -1,6 +1,7 @@
 #include <I2cControlPanel_asukiaaa.h>
 
 I2cControlPanel_asukiaaa::Driver controlPanel;
+// I2cControlPanel_asukiaaa::Driver controlPanel(0x41); // custom address
 
 void setup() {
   Serial.begin(9600);
