@@ -5,6 +5,9 @@ I2cControlPanel_asukiaaa::Driver controlPanel;
 
 void setup() {
   Serial.begin(9600);
+
+  // controlPanel.setWire(&Wire1); // controller can use other wire port
+
   controlPanel.begin();
 }
 
