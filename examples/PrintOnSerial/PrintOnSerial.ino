@@ -1,5 +1,4 @@
 #include <I2cControlPanel_asukiaaa.h>
-#include <string_asukiaaa.h>
 
 I2cControlPanel_asukiaaa::Driver controlPanel;
 
@@ -9,37 +8,41 @@ void setup() {
 }
 
 void printInfo(I2cControlPanel_asukiaaa::Info info) {
-  Serial.println("Buttons: " +
+  Serial.println("buttonsLeft: " +
                  String(info.buttonsLeft[0]) + " " +
-                 String(info.buttonsLeft[1]) + " " +
+                 String(info.buttonsLeft[1]));
+  Serial.println("buttonsRight: " +
                  String(info.buttonsRight[0]) + " " +
-                 String(info.buttonsRight[1]) + " " +
-                 String(info.buttonJoyLeft) + " " +
-                 String(info.buttonJoyRight) + " " +
+                 String(info.buttonsRight[1]));
+  Serial.println("buttonsJoyLeft: " +
+                 String(info.buttonJoyLeft));
+  Serial.println("buttonsJoyRight: " +
+                 String(info.buttonJoyRight));
+  Serial.println("slideSwitches: " +
                  String(info.slideSwitches[0]) + " " +
                  String(info.slideSwitches[1]));
   Serial.println("Encoders: " +
                  String(info.encoders[0]) + " " +
                  String(info.encoders[1]));
   Serial.println("Joy: hori, vert");
-  Serial.println("L  : " +
-                 string_asukiaaa::padNumStart(info.joyLeftHori, 4, ' ') +
-                 "," +
-                 string_asukiaaa::padNumStart(info.joyLeftVert, 4, ' '));
-  Serial.println("R  : " +
-                 string_asukiaaa::padNumStart(info.joyRightHori, 4, ' ') +
-                 "," +
-                 string_asukiaaa::padNumStart(info.joyRightVert, 4, ' '));
-  Serial.print("LEDs:");
+  Serial.println("joyLeftHori: " + String(info.joyLeftHori));
+  Serial.println("joyLeftVert: " + String(info.joyLeftVert));
+  Serial.println("joyRightHori: " + String(info.joyRightHori));
+  Serial.println("joyRightVert: " + String(info.joyRightVert));
+  Serial.print("leds:");
   for (int i = 0; i < 4; ++i) {
     Serial.print(" ");
     Serial.print(info.leds[i]);
   }
   Serial.println("");
-  Serial.println("LCD chars");
-  for (int i = 0; i < 16; ++i) {
+  Serial.print("lcdChars[0to7]  : ");
+  for (int i = 0; i < 8; ++i) {
     Serial.print(info.lcdChars[i]);
-    if (i == 7) Serial.println("");
+  }
+  Serial.println("");
+  Serial.print("lcdChars[8to15] : ");
+  for (int i = 8; i < 16; ++i) {
+    Serial.print(info.lcdChars[i]);
   }
   Serial.println("");
 }
@@ -67,7 +70,7 @@ void loop() {
     Serial.println("Cannot update leds. Error: " + String(i2cState));
   }
 
-  String strToShow = string_asukiaaa::padNumStart(count, 4, ' ');
+  String strToShow = String(count);
   info.putStringToLcdChars(strToShow, 16 - strToShow.length());
   i2cState = controlPanel.writeLcdChars(info);
   if (i2cState == 0) {
@@ -75,6 +78,7 @@ void loop() {
   } else {
     Serial.println("Cannot update lcd. Error: " + String(i2cState));
   }
+  Serial.println("");
 
   ++count;
   delay(1000);
