@@ -1,6 +1,6 @@
 # I2cControlPanel
 
-An arduino library to read and write value for control panel.
+An arduino library to read and write value of [I2cControlPanel](https://www.switch-science.com/catalog/6824/).
 
 ## Setup
 
@@ -19,3 +19,9 @@ See [an example project](examples/PrintOnSerial/PrintOnSerial.ino).
 ## License
 
 MIT
+
+## References
+
+- [エンコーダー（可変抵抗）が付いた有線コントローラーを作ってみた](https://asukiaaa.blogspot.com/2020/11/i2c-control-panel.html)
+- [I2cControlPanel | スイッチサイエンス](https://www.switch-science.com/catalog/6824/)
+- [I2cControlPanel PCB data](https://github.com/asukiaaa/I2cControlPanel)
