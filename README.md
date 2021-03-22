@@ -1,4 +1,4 @@
-# I2cControlPanel
+# I2cControlPanel_asukiaaa
 
 An arduino library to read and write value of [I2cControlPanel](https://www.switch-science.com/catalog/6824/).
 
