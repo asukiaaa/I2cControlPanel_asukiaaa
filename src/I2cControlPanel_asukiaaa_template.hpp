@@ -64,9 +64,9 @@ class Info {
 };
 
 template <class TemplateWire>
-class DriverBase {
+class DriverTemplate {
  public:
-  DriverBase(uint8_t address = I2C_CONTROL_PANEL_ASUKIAAA_DEFAUT_ADDRESS)
+  DriverTemplate(uint8_t address = I2C_CONTROL_PANEL_ASUKIAAA_DEFAUT_ADDRESS)
       : address(address) {
     wire = NULL;
   }

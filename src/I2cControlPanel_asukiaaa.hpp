@@ -7,14 +7,14 @@
 namespace I2cControlPanel_asukiaaa {
 
 template <>
-void DriverBase<TwoWire>::begin() {
+void DriverTemplate<TwoWire>::begin() {
   if (wire == NULL) {
     wire = &Wire;
     wire->begin();
   }
 }
 
-typedef DriverBase<TwoWire> Driver;
+typedef DriverTemplate<TwoWire> Driver;
 
 }  // namespace I2cControlPanel_asukiaaa
 
