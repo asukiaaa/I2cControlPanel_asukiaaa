@@ -39,7 +39,7 @@ class Info {
     stateRead = -1;
   }
 
-  void putStringToLcdChars(String str, int from) {
+  void putStringToLcdChars(String str, int from = 0) {
     int strLen = str.length();
     for (int i = 0; i < strLen; ++i) {
       int charIndex = from + i;
