@@ -12,7 +12,7 @@ void setup() {
   controlPanel.begin();
 }
 
-void printInfo(I2cControlPanel_asukiaaa::Info info) {
+void printInfo(const I2cControlPanel_asukiaaa::Info& info) {
   Serial.println("buttonsLeft: " +
                  String(info.buttonsLeft[0]) + " " +
                  String(info.buttonsLeft[1]));
