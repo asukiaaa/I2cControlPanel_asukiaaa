@@ -47,14 +47,14 @@ class Info {
       lcdChars[charIndex] = str[i];
     }
   }
-  bool joyLeftOperatedDown() { return joyLeftVert < ValueJoyLow; }
-  bool joyLeftOperatedLeft() { return joyLeftHori < ValueJoyLow; }
-  bool joyLeftOperatedRight() { return joyLeftHori > ValueJoyHigh; }
-  bool joyLeftOperatedUp() { return joyLeftVert > ValueJoyHigh; }
-  bool joyRightOperatedDown() { return joyRightVert < ValueJoyLow; }
-  bool joyRightOperatedLeft() { return joyRightHori < ValueJoyLow; }
-  bool joyRightOperatedRight() { return joyRightHori > ValueJoyHigh; }
-  bool joyRightOperatedUp() { return joyRightVert > ValueJoyHigh; }
+  bool joyLeftOperatedDown() const { return joyLeftVert < ValueJoyLow; }
+  bool joyLeftOperatedLeft() const { return joyLeftHori < ValueJoyLow; }
+  bool joyLeftOperatedRight() const { return joyLeftHori > ValueJoyHigh; }
+  bool joyLeftOperatedUp() const { return joyLeftVert > ValueJoyHigh; }
+  bool joyRightOperatedDown() const { return joyRightVert < ValueJoyLow; }
+  bool joyRightOperatedLeft() const { return joyRightHori < ValueJoyLow; }
+  bool joyRightOperatedRight() const { return joyRightHori > ValueJoyHigh; }
+  bool joyRightOperatedUp() const { return joyRightVert > ValueJoyHigh; }
 
  private:
   enum JoyVariable {
