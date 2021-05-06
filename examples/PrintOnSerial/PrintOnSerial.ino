@@ -19,9 +19,9 @@ void printInfo(const I2cControlPanel_asukiaaa::Info& info) {
   Serial.println("buttonsRight: " +
                  String(info.buttonsRight[0]) + " " +
                  String(info.buttonsRight[1]));
-  Serial.println("buttonsJoyLeft: " +
+  Serial.println("buttonJoyLeft: " +
                  String(info.buttonJoyLeft));
-  Serial.println("buttonsJoyRight: " +
+  Serial.println("buttonJoyRight: " +
                  String(info.buttonJoyRight));
   Serial.println("slideSwitches: " +
                  String(info.slideSwitches[0]) + " " +
