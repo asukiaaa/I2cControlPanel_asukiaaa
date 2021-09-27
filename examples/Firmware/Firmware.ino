@@ -1,11 +1,12 @@
 // This firmware depends on ST7032_asukiaaa
 // Please install that before updating firmware
 
-#include <avr/wdt.h>
+#include <CRCx.h>
+#include <I2cControlPanel_asukiaaa.h>
+#include <ST7032_asukiaaa.h>
 #include <Wire.h>
 #include <Wire1.h>
-#include <ST7032_asukiaaa.h>
-#include <I2cControlPanel_asukiaaa.h>
+#include <avr/wdt.h>
 #include <string_asukiaaa.h>
 #include <wire_asukiaaa.h>
 
@@ -31,15 +32,23 @@
 #define SLIDE_0 20
 #define SLIDE_1 21
 
+#define PROTOCOL_VERSION 1
+
 int registerIndex = 0;
 // 0 byte: button * 4, joy button * 2, toggle * 2]
-// 1 byte: led * 3]
-// 2-7 byte: analog * 6
-// 8-23 byte: char * 16
-const int registerLen = 24;
-uint8_t registers[registerLen];
+// 1-6 bytes: analog * 6
+// 7 byte: led * 3]
+// 8-23 bytes: char * 16
+// 24 byte: protocol version
+// 25 byte: crc8
+uint8_t registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
 
 ST7032_asukiaaa lcd;
+
+void updateCRC8() {
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8] =
+      crcx::crc8(registers, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8);
+}
 
 void onReceive(int) {
   wdt_reset();
@@ -50,18 +59,21 @@ void onReceive(int) {
       registerIndex = v;
     } else {
       if (registerIndex == I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS ||
-          (registerIndex >= I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS && registerIndex < registerLen)) {
+          (registerIndex >= I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS &&
+           registerIndex < I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH)) {
         registers[registerIndex] = v;
       }
       ++registerIndex;
     }
     ++receivedLen;
   }
+  updateCRC8();
 }
 
 void onRequest() {
-  if (registerIndex < registerLen) {
-    Wire1.write(&registers[registerIndex], registerLen - registerIndex);
+  if (registerIndex < I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH) {
+    Wire1.write(&registers[registerIndex],
+                I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH - registerIndex);
   } else {
     Wire1.write(0);
   }
@@ -131,16 +143,20 @@ void setup() {
   lcd.begin(2, 8);
   lcd.setContrast(30);
   uint8_t address = readAddress();
-  String initialStr = "hi  0x" + string_asukiaaa::padStart(String(address, HEX), 2, '0');
+  String initialStr =
+      "hi  0x" + string_asukiaaa::padStart(String(address, HEX), 2, '0');
   for (int i = 0; i < initialStr.length(); ++i) {
-    registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i] = initialStr[i];
+    registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i] =
+        initialStr[i];
   }
   for (int i = 8; i < 16; ++i) {
     registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i] = ' ';
   }
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_PROTOCOL_VERION] =
+      PROTOCOL_VERSION;
   Wire1.onReceive(onReceive);
-  pinMode(SDA1, INPUT);
-  pinMode(SCL1, INPUT);
+  // pinMode(SDA1, INPUT);
+  // pinMode(SCL1, INPUT);
   Wire1.onRequest(onRequest);
   Wire1.begin(address);
 }
@@ -182,9 +198,7 @@ void testLeds() {
   delay(1000);
 }
 
-void printAnalogOnLcd(int pin) {
-  lcd.print(analogRead(pin) / 4, HEX);
-}
+void printAnalogOnLcd(int pin) { lcd.print(analogRead(pin) / 4, HEX); }
 
 void testJoyAndVolumes() {
   lcd.setCursor(6, 0);
@@ -217,13 +231,20 @@ uint8_t readButtonsAndSwitches() {
 }
 
 void readAll() {
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_BUTTONS_AND_SWITCHES] = readButtonsAndSwitches();
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS + 1] = analogRead(ANALOG_ENCODE_R) / 4;
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS] = analogRead(ANALOG_ENCODE_L) / 4;
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT] = analogRead(ANALOG_JOY_L_HORI) / 4;
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT + 1] = analogRead(ANALOG_JOY_L_VERT) / 4;
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT] = analogRead(ANALOG_JOY_R_HORI) / 4;
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT + 1] = analogRead(ANALOG_JOY_R_VERT) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_BUTTONS_AND_SWITCHES] =
+      readButtonsAndSwitches();
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS + 1] =
+      analogRead(ANALOG_ENCODE_R) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS] =
+      analogRead(ANALOG_ENCODE_L) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT] =
+      analogRead(ANALOG_JOY_L_HORI) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT + 1] =
+      analogRead(ANALOG_JOY_L_VERT) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT] =
+      analogRead(ANALOG_JOY_R_HORI) / 4;
+  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT + 1] =
+      analogRead(ANALOG_JOY_R_VERT) / 4;
 }
 
 void updateLcdIfNeeded() {
@@ -237,7 +258,8 @@ void updateLcdIfNeeded() {
   bool neededToUpdateLine0 = false;
   bool neededToUpdateLine1 = false;
   for (int i = 0; i < charsLen; ++i) {
-    char targetChar = registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i];
+    char targetChar =
+        registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i];
     if (i < charsLen / 2) {
       if (line0[i] != targetChar) {
         line0[i] = targetChar;
@@ -263,7 +285,8 @@ void updateLcdIfNeeded() {
 
 void updateAll() {
   uint8_t leds = registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS];
-  updateLeds((leds & 0b0001) != 0, (leds & 0b0010) != 0, (leds & 0b0100) != 0, (leds & 0b1000) != 0);
+  updateLeds((leds & 0b0001) != 0, (leds & 0b0010) != 0, (leds & 0b0100) != 0,
+             (leds & 0b1000) != 0);
   updateLcdIfNeeded();
 }
 
@@ -273,7 +296,7 @@ void countupLed() {
   digitalWrite(LED_2, count % 8 / 4 == 1);
   digitalWrite(LED_1, count % 16 / 8 == 1);
   digitalWrite(LED_0, count % 32 / 16 == 1);
-  count ++;
+  count++;
 }
 
 void loop() {

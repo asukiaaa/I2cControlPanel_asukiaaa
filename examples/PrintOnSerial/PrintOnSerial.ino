@@ -10,24 +10,20 @@ void setup() {
   // controlPanel.setWire(&Wire1); // controller can use other wire port
 
   controlPanel.begin();
+  // controlPanel.setUseCRC8(true); // CRC8 check is avairable for
+  // protocol version 1 or more
 }
 
 void printInfo(const I2cControlPanel_asukiaaa::Info& info) {
-  Serial.println("buttonsLeft: " +
-                 String(info.buttonsLeft[0]) + " " +
+  Serial.println("buttonsLeft: " + String(info.buttonsLeft[0]) + " " +
                  String(info.buttonsLeft[1]));
-  Serial.println("buttonsRight: " +
-                 String(info.buttonsRight[0]) + " " +
+  Serial.println("buttonsRight: " + String(info.buttonsRight[0]) + " " +
                  String(info.buttonsRight[1]));
-  Serial.println("buttonJoyLeft: " +
-                 String(info.buttonJoyLeft));
-  Serial.println("buttonJoyRight: " +
-                 String(info.buttonJoyRight));
-  Serial.println("slideSwitches: " +
-                 String(info.slideSwitches[0]) + " " +
+  Serial.println("buttonJoyLeft: " + String(info.buttonJoyLeft));
+  Serial.println("buttonJoyRight: " + String(info.buttonJoyRight));
+  Serial.println("slideSwitches: " + String(info.slideSwitches[0]) + " " +
                  String(info.slideSwitches[1]));
-  Serial.println("Encoders: " +
-                 String(info.encoders[0]) + " " +
+  Serial.println("Encoders: " + String(info.encoders[0]) + " " +
                  String(info.encoders[1]));
   Serial.println("joyLeftHori: " + String(info.joyLeftHori));
   Serial.println("joyLeftVert: " + String(info.joyLeftVert));
@@ -49,6 +45,7 @@ void printInfo(const I2cControlPanel_asukiaaa::Info& info) {
     Serial.print(info.lcdChars[i]);
   }
   Serial.println("");
+  Serial.println("protocolVersion: " + String(info.protocolVersion));
 }
 
 int count = 0;
@@ -60,6 +57,7 @@ void loop() {
     printInfo(info);
   } else {
     Serial.println("Cannot read info. Error: " + String(info.stateRead));
+    return;
   }
 
   int ledToBright = count % 5;
