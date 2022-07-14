@@ -72,6 +72,11 @@ class Info {
 template <class TemplateWire>
 class DriverTemplate {
  public:
+  DriverTemplate(TemplateWire* wire,
+                 uint8_t address = I2C_CONTROL_PANEL_ASUKIAAA_DEFAUT_ADDRESS)
+      : address(address) {
+    this->wire = wire;
+  }
   DriverTemplate(uint8_t address = I2C_CONTROL_PANEL_ASUKIAAA_DEFAUT_ADDRESS)
       : address(address) {
     wire = NULL;
