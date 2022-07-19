@@ -14,8 +14,8 @@
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS 0x07
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS 0x08
 #define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_PROTOCOL_VERION 24
-#define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8 25
-#define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH 26
+#define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC 25
+#define I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH 27
 
 #define STATE_READ_UNMATCH_CRC8 10
 
@@ -83,7 +83,7 @@ class DriverTemplate {
   }
 
   void setWire(TemplateWire* wire) { this->wire = wire; }
-  void setUseCRC8(bool useCRC8) { this->useCRC8 = useCRC8; }
+  void useCRC(bool useCRC) { this->usingCRC = useCRC; }
 
   void begin(){};
 
@@ -96,9 +96,10 @@ class DriverTemplate {
     //   Serial.print(" ");
     // }
     // Serial.println("");
-    if (useCRC8 &&
-        crcx::crc8(buffers, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8) !=
-            buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8]) {
+    if (usingCRC &&
+        crcx::crc16(buffers, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC) !=
+            ((uint16_t)buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC] << 8 |
+             buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC + 1])) {
       return setStateRead(info, STATE_READ_UNMATCH_CRC8);
     }
     parseButtonsAndSwitches(
@@ -159,6 +160,8 @@ class DriverTemplate {
 
   int write(const Info& info) {
     uint8_t ledState = createLedState(info);
+    // Serial.println("wire address " + String((unsigned long)wire));
+    // return 0;
     wire->beginTransmission(address);
     wire->write(I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LEDS);
     wire->write(ledState);
@@ -185,7 +188,7 @@ class DriverTemplate {
   uint8_t buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
   TemplateWire* wire;
   const uint8_t address;
-  bool useCRC8 = false;
+  bool usingCRC = false;
 
   static void parseButtonsAndSwitches(Info* info, uint8_t buff) {
     info->buttonsLeft[0] = (buff & 0b00000001) != 0;

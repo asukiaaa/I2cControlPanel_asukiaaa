@@ -10,7 +10,7 @@ void setup() {
   M5.Lcd.begin();
   M5.Lcd.setTextSize(2);
   controlPanel.begin();
-  controlPanel.setUseCRC8(true);  // crc8 is avairable for
+  // controlPanel.setUseCRC(true);  // CRC check is avairable for
   // protocol version 1 or more
 }
 

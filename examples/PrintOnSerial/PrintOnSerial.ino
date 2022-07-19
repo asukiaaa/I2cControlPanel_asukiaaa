@@ -10,7 +10,7 @@ void setup() {
   // controlPanel.setWire(&Wire1); // controller can use other wire port
 
   controlPanel.begin();
-  // controlPanel.setUseCRC8(true); // CRC8 check is avairable for
+  // controlPanel.setUseCRC(true); // CRC check is avairable for
   // protocol version 1 or more
 }
 

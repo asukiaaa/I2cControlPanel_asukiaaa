@@ -45,9 +45,11 @@ uint8_t registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
 
 ST7032_asukiaaa lcd;
 
-void updateCRC8() {
-  registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8] =
-      crcx::crc8(registers, I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC8);
+void updateCRC16() {
+  uint8_t addrCrcStart = I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_CRC;
+  uint16_t crc = crcx::crc16(registers, addrCrcStart);
+  registers[addrCrcStart] = crc >> 8;
+  registers[addrCrcStart + 1] = crc & 0xff;
 }
 
 void onReceive(int) {
@@ -67,7 +69,7 @@ void onReceive(int) {
     }
     ++receivedLen;
   }
-  updateCRC8();
+  updateCRC16();
 }
 
 void onRequest() {
