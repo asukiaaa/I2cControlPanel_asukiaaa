@@ -10,6 +10,57 @@
 #include <string_asukiaaa.h>
 #include <wire_asukiaaa.h>
 
+#include <Gauge_asukiaaa.hpp>
+
+// #define CENTER_ANALOG_JOY_LEFT_HORI (135 * 4)
+// #define CENTER_ANALOG_JOY_LEFT_VERT (143 * 4)
+// #define CENTER_ANALOG_JOY_RIGHT_HORI (135 * 4)
+// #define CENTER_ANALOG_JOY_RIGHT_VERT (143 * 4)
+
+Gauge_asukiaaa::Point pointsLeftHori[] = {
+    {0, 0},
+#ifdef CENTER_ANALOG_JOY_LEFT_HORI
+    {CENTER_ANALOG_JOY_LEFT_HORI, 0xff / 2},
+#endif
+    {1023, 0xff},
+};
+Gauge_asukiaaa::Core gaugeLeftHori(pointsLeftHori,
+                                   sizeof(pointsLeftHori) /
+                                       sizeof(Gauge_asukiaaa::Point));
+
+Gauge_asukiaaa::Point pointsLeftVert[] = {
+    {0, 0},
+#ifdef CENTER_ANALOG_JOY_LEFT_VERT
+    {CENTER_ANALOG_JOY_LEFT_VERT, 0xff / 2},
+#endif
+    {1023, 0xff},
+};
+Gauge_asukiaaa::Core gaugeLeftVert(pointsLeftVert,
+                                   sizeof(pointsLeftVert) /
+                                       sizeof(Gauge_asukiaaa::Point));
+
+Gauge_asukiaaa::Point pointsRightHori[] = {
+    {0, 0},
+#ifdef CENTER_ANALOG_JOY_RIGHT_HORI
+    {CENTER_ANALOG_JOY_RIGHT_HORI, 0xff / 2},
+#endif
+    {1023, 0xff},
+};
+Gauge_asukiaaa::Core gaugeRightHori(pointsRightHori,
+                                    sizeof(pointsRightHori) /
+                                        sizeof(Gauge_asukiaaa::Point));
+
+Gauge_asukiaaa::Point pointsRightVert[] = {
+    {0, 0},
+#ifdef CENTER_ANALOG_JOY_RIGHT_VERT
+    {CENTER_ANALOG_JOY_RIGHT_VERT, 0xff / 2},
+#endif
+    {1023, 0xff},
+};
+Gauge_asukiaaa::Core gaugeRightVert(pointsRightVert,
+                                    sizeof(pointsRightVert) /
+                                        sizeof(Gauge_asukiaaa::Point));
+
 #define LED_0 0
 #define LED_1 1
 #define LED_2 2
@@ -240,13 +291,13 @@ void readAll() {
   registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_ENCODERS] =
       analogRead(ANALOG_ENCODE_L) / 4;
   registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT] =
-      analogRead(ANALOG_JOY_L_HORI) / 4;
+      gaugeLeftHori.convert(analogRead(ANALOG_JOY_L_HORI));
   registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_LEFT + 1] =
-      analogRead(ANALOG_JOY_L_VERT) / 4;
+      gaugeLeftVert.convert(analogRead(ANALOG_JOY_L_VERT));
   registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT] =
-      analogRead(ANALOG_JOY_R_HORI) / 4;
+      gaugeRightHori.convert(analogRead(ANALOG_JOY_R_HORI));
   registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_JOY_RIGHT + 1] =
-      analogRead(ANALOG_JOY_R_VERT) / 4;
+      gaugeRightVert.convert(analogRead(ANALOG_JOY_R_VERT));
 }
 
 void updateLcdIfNeeded() {
