@@ -1,16 +1,17 @@
 #include <I2cControlPanel_asukiaaa.h>
 #include <M5Stack.h>
 #include <Wire.h>
+#include <string_asukiaaa.h>
 
 I2cControlPanel_asukiaaa::Driver controlPanel;
-// I2cControlPanel_asukiaaa::Driver controlPanel(0x41); // custom address
+// I2cControlPanel_asukiaaa::Driver controlPanel(0x41);  // custom address
 
 void setup() {
   M5.begin();
   M5.Lcd.begin();
   M5.Lcd.setTextSize(2);
   controlPanel.begin();
-  // controlPanel.setUseCRC(true);  // CRC check is avairable for
+  controlPanel.useCRC(true);  // CRC check is avairable for
   // protocol version 1 or more
 }
 
@@ -25,6 +26,16 @@ void drawJoyRect(int x, int y, int wh, uint8_t joyHori, uint8_t joyVert,
 }
 
 void printInfo(const I2cControlPanel_asukiaaa::Info& info) {
+  M5.lcd.setTextSize(1);
+  M5.lcd.setCursor(30, 73);
+  M5.lcd.println(string_asukiaaa::padNumStart(info.joyLeftVert, 3, ' '));
+  M5.lcd.setCursor(53, 82);
+  M5.lcd.print(string_asukiaaa::padNumEnd(info.joyLeftHori, 3, ' '));
+  M5.lcd.setCursor(272, 73);
+  M5.lcd.println(string_asukiaaa::padNumEnd(info.joyRightVert, 3, ' '));
+  M5.lcd.setCursor(220, 82);
+  M5.lcd.print(string_asukiaaa::padNumEnd(info.joyRightHori, 3, ' '));
+  M5.lcd.setTextSize(2);
   drawJoyRect(50, 30, 50, info.joyLeftHori, info.joyLeftVert,
               info.buttonJoyLeft);
   drawJoyRect(220, 30, 50, info.joyRightHori, info.joyRightVert,
