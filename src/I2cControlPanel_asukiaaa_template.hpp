@@ -72,6 +72,8 @@ class Info {
 template <class TemplateWire>
 class DriverTemplate {
  public:
+  TemplateWire* wire;
+  const uint8_t address;
   DriverTemplate(TemplateWire* wire,
                  uint8_t address = I2C_CONTROL_PANEL_ASUKIAAA_DEFAUT_ADDRESS)
       : address(address) {
@@ -186,8 +188,6 @@ class DriverTemplate {
 
  private:
   uint8_t buffers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LENGTH];
-  TemplateWire* wire;
-  const uint8_t address;
   bool usingCRC = false;
 
   static void parseButtonsAndSwitches(Info* info, uint8_t buff) {
