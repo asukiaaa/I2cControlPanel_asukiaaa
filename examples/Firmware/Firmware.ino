@@ -198,7 +198,7 @@ void setup() {
   uint8_t address = readAddress();
   String initialStr =
       "hi  0x" + string_asukiaaa::padStart(String(address, HEX), 2, '0');
-  for (int i = 0; i < initialStr.length(); ++i) {
+  for (uint16_t i = 0; i < initialStr.length(); ++i) {
     registers[I2C_CONTROL_PANEL_ASUKIAAA_REGISTER_LCD_CHARS + i] =
         initialStr[i];
   }
